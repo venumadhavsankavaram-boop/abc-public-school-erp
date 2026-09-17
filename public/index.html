@@ -65,10 +65,10 @@
        --magenta/--teal as-is, since those double as fixed, meaningful
        status colours elsewhere (attendance, exam grades, etc.) and
        shouldn't shift per school. */
-    --login-accent:#041b51;
-    --login-accent-deep:#031746;
-    --login-accent-soft:#4d93b8;
-    --login-accent-rgb:4,27,81;
+    --login-accent:#211A4E;
+    --login-accent-deep:#161033;
+    --login-accent-soft:#E8C874;
+    --login-accent-rgb:33,26,78;
     --brand-navy:var(--login-accent); --brand-navy-deep:var(--login-accent-deep);
   }
   [data-theme="dark"]{
@@ -77,10 +77,10 @@
     --cream:#15121F; --ink:#EDEAF5; --ink-soft:#B0A9C7; --white:#211C34;
     --border:rgba(237,234,245,0.12);
     --shadow: 0 20px 50px -24px rgba(0,0,0,0.6);
-    --login-accent:#acc2f7;
-    --login-accent-deep:#010510;
-    --login-accent-soft:#006499;
-    --login-accent-rgb:172,194,247;
+    --login-accent:#C9C2F0;
+    --login-accent-deep:#100C29;
+    --login-accent-soft:#CB9A2E;
+    --login-accent-rgb:201,194,240;
   }
   [data-theme="dark"] body{ background:var(--cream); }
   [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea{
@@ -1140,7 +1140,10 @@
             <button type="button" id="btnExportStudentsExcel" onclick="exportExcel()">Export Students (Excel)</button>
             <button type="button" id="btnExportStudentsPDF" onclick="exportStudentsPDF()">Export Students (PDF)</button>
             <button type="button" onclick="openTransferCertPicker()">Transfer Certificates</button>
+            <button type="button" onclick="openStudyCertPicker()">Study Certificates</button>
             <button type="button" onclick="openDuplicatesModal()">Find Duplicate Students</button>
+            <button type="button" onclick="openTrashModal('students')">Recently Deleted Students</button>
+            <button type="button" onclick="openDeletionRequestsModal()">Pending Deletion Requests</button>
           </div>
         </div>
         <input type="file" id="importFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="importExcel(event)">
@@ -1614,7 +1617,7 @@
             </div>
             <div class="f-field">
               <label>Roll Number</label>
-              <input type="text" id="fRollNo" placeholder="e.g. 12">
+              <input type="text" id="fRollNo" placeholder="e.g. 12" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
             </div>
             <div class="f-field">
               <label>Gender</label>
@@ -1653,11 +1656,11 @@
             </div>
             <div class="f-field">
               <label>PEN Number</label>
-              <input type="text" id="fPen" placeholder="Permanent Education Number">
+              <input type="text" id="fPen" placeholder="Permanent Education Number" inputmode="numeric" maxlength="12" oninput="this.value=this.value.replace(/\D/g,'').slice(0,12)">
             </div>
             <div class="f-field">
               <label>Aadhar Number</label>
-              <input type="text" id="fAadhar" placeholder="12-digit Aadhaar number">
+              <input type="text" id="fAadhar" placeholder="12-digit Aadhaar number" inputmode="numeric" maxlength="12" oninput="this.value=this.value.replace(/\D/g,'').slice(0,12)">
             </div>
             <div class="f-field">
               <label>Caste Category</label>
@@ -1709,8 +1712,8 @@
           <h4 class="wpanel-h">Father Details</h4>
           <div class="form-grid">
             <div class="f-field"><label>Father Name</label><input type="text" id="fFatherName"></div>
-            <div class="f-field"><label>Father Phone Number</label><input type="tel" id="fFatherPhone"></div>
-            <div class="f-field"><label>Father Aadhaar</label><input type="text" id="fFatherAadhar"></div>
+            <div class="f-field"><label>Father Phone Number</label><input type="tel" id="fFatherPhone" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
+            <div class="f-field"><label>Father Aadhaar</label><input type="text" id="fFatherAadhar" inputmode="numeric" maxlength="12" oninput="this.value=this.value.replace(/\D/g,'').slice(0,12)"></div>
             <div class="f-field"><label>Father Occupation</label><input type="text" id="fFatherOccupation"></div>
             <div class="f-field"><label>Father Annual Income (₹)</label><input type="number" id="fFatherIncome" min="0"></div>
             <div class="f-field full"><label>Father Address</label><input type="text" id="fFatherAddress"></div>
@@ -1718,8 +1721,8 @@
           <h4 class="wpanel-h">Mother Details</h4>
           <div class="form-grid">
             <div class="f-field"><label>Mother Name</label><input type="text" id="fMotherName"></div>
-            <div class="f-field"><label>Mother Phone Number</label><input type="tel" id="fMotherPhone"></div>
-            <div class="f-field"><label>Mother Aadhaar</label><input type="text" id="fMotherAadhar"></div>
+            <div class="f-field"><label>Mother Phone Number</label><input type="tel" id="fMotherPhone" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
+            <div class="f-field"><label>Mother Aadhaar</label><input type="text" id="fMotherAadhar" inputmode="numeric" maxlength="12" oninput="this.value=this.value.replace(/\D/g,'').slice(0,12)"></div>
             <div class="f-field"><label>Mother Occupation</label><input type="text" id="fMotherOccupation"></div>
             <div class="f-field"><label>Mother Annual Income (₹)</label><input type="number" id="fMotherIncome" min="0"></div>
             <div class="f-field full"><label>Mother Address</label><input type="text" id="fMotherAddress"></div>
@@ -1733,7 +1736,7 @@
           <div class="form-grid" id="guardianFields" style="display:none;">
             <div class="f-field"><label>Guardian Name</label><input type="text" id="fGuardianName"></div>
             <div class="f-field"><label>Relation to Student</label><input type="text" id="fGuardianRelation"></div>
-            <div class="f-field"><label>Guardian Phone</label><input type="tel" id="fGuardianPhone"></div>
+            <div class="f-field"><label>Guardian Phone</label><input type="tel" id="fGuardianPhone" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
             <div class="f-field full"><label>Guardian Address</label><input type="text" id="fGuardianAddress"></div>
           </div>
         </div>
@@ -2058,7 +2061,7 @@
             <div class="f-field"><label>Gender *</label><select id="stfGender" required><option value="" disabled selected>Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
             <div class="f-field"><label>Date of Birth *</label><input type="date" id="stfDob" required></div>
             <div class="f-field"><label>Blood Group</label><select id="stfBlood"><option value="">Select blood group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-            <div class="f-field"><label>Aadhar Number</label><input type="text" id="stfAadhar" placeholder="12-digit Aadhaar number"></div>
+            <div class="f-field"><label>Aadhar Number</label><input type="text" id="stfAadhar" placeholder="12-digit Aadhaar number" inputmode="numeric" maxlength="12" oninput="this.value=this.value.replace(/\D/g,'').slice(0,12)"></div>
           </div>
         </div>
 
@@ -2109,19 +2112,19 @@
           <div class="form-grid">
             <div class="f-field"><label>Bank Name</label><input type="text" id="stfBankName" placeholder="e.g. State Bank of India"></div>
             <div class="f-field"><label>Account Holder Name</label><input type="text" id="stfBankAccountName" placeholder="As per bank records"></div>
-            <div class="f-field"><label>Account Number</label><input type="text" id="stfBankAccountNumber" placeholder="Bank account number"></div>
-            <div class="f-field"><label>IFSC Code</label><input type="text" id="stfBankIfsc" placeholder="e.g. SBIN0001234" style="text-transform:uppercase;"></div>
+            <div class="f-field"><label>Account Number</label><input type="text" id="stfBankAccountNumber" placeholder="Bank account number" inputmode="numeric" maxlength="18" oninput="this.value=this.value.replace(/\D/g,'').slice(0,18)"></div>
+            <div class="f-field"><label>IFSC Code</label><input type="text" id="stfBankIfsc" placeholder="e.g. SBIN0001234" style="text-transform:uppercase;" maxlength="11" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)"></div>
           </div>
           <p style="font-size:0.76rem; color:var(--ink-soft); margin:8px 0 0;">Optional — only used to prefill the Salary Disbursement Report (Staff → Payroll) so it's ready to hand off to your bank or accountant. Nobody outside Payroll access can see this.</p>
         </div>
 
         <div class="wtab-panel" id="stfpanel-contact" style="display:none;">
           <div class="form-grid">
-            <div class="f-field"><label>Phone *</label><input type="text" id="stfPhone" required placeholder="10-digit mobile number"></div>
+            <div class="f-field"><label>Phone *</label><input type="text" id="stfPhone" required placeholder="10-digit mobile number" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
             <div class="f-field"><label>Email *</label><input type="email" id="stfEmail" required placeholder="staff@example.com"></div>
             <div class="f-field full"><label>Address *</label><input type="text" id="stfAddress" required placeholder="Full address"></div>
             <div class="f-field"><label>Emergency Contact Name</label><input type="text" id="stfEmergencyName" placeholder="Optional"></div>
-            <div class="f-field"><label>Emergency Contact Phone</label><input type="text" id="stfEmergencyPhone" placeholder="Optional"></div>
+            <div class="f-field"><label>Emergency Contact Phone</label><input type="text" id="stfEmergencyPhone" placeholder="Optional" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
           </div>
           <label class="admission-toggle" style="justify-content:flex-start; margin:16px 0 4px;">
             <input type="checkbox" id="stfCreateLogin" onchange="toggleStaffLoginFields()"> Also create a login for this staff member
@@ -2248,6 +2251,49 @@
           <button type="submit" class="btn btn-primary">Save Exam</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="trashModalOverlay">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeTrashModal()">&times;</button>
+      <h2 id="trashModalTitle">Recently Deleted</h2>
+      <p class="modal-sub">Deleted records are kept here, not erased, until restored — nothing here is removed automatically.</p>
+      <div id="trashModalBody" style="max-height:440px; overflow-y:auto;"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeTrashModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deletionRequestsModalOverlay">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeDeletionRequestsModal()">&times;</button>
+      <h2>Pending Deletion Requests</h2>
+      <p class="modal-sub" id="deletionRequestsModalSub">A record is only ever deleted once a different Admin/Principal approves the request — the person who asked for it can't also approve it.</p>
+      <div id="deletionRequestsModalBody" style="max-height:440px; overflow-y:auto;"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeDeletionRequestsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="studyCertModalOverlay">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeStudyCertModal()">&times;</button>
+      <h2>Study Certificate</h2>
+      <p class="modal-sub">Pulled from this student's record — review, adjust Conduct/Purpose if needed, then generate. Every certificate is logged with a serial number, even for students who have since gone Inactive.</p>
+      <div id="studyCertModalBody"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeStudyCertModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="submitStudyCertificate()">Generate &amp; Print</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2536,6 +2582,32 @@
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* ===== Field validation helpers (mobile numbers, Aadhaar, photo size) =====
+     Matching HTML attributes (maxlength/inputmode/oninput digit-filtering) on
+     the fields themselves stop most bad input as it's typed; these run again
+     at save time in case a value was pasted in or left partially filled. */
+  function digitsOnly(str){ return (str || '').replace(/\D/g, ''); }
+  function isValidMobile(str){ const d = digitsOnly(str); return d.length === 10; }
+  function isValidAadhar(str){ const d = digitsOnly(str); return d.length === 12; }
+  function isValidPin(str){ const d = digitsOnly(str); return d.length === 6; }
+  function isValidUdise(str){ const d = digitsOnly(str); return d.length === 11; }
+  function isValidBankAccount(str){ const d = digitsOnly(str); return d.length >= 6 && d.length <= 18; }
+  function isValidIfsc(str){ return /^[A-Z]{4}0[A-Z0-9]{6}$/.test((str||'').trim().toUpperCase()); }
+
+  const PHOTO_UPLOAD_MAX_BYTES = 2 * 1024 * 1024; // 2MB — generous for a photo/signature/logo, keeps records and backups from bloating
+  function readImageFileWithSizeLimit(e, onLoaded){
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > PHOTO_UPLOAD_MAX_BYTES){
+      showToast(`That image is ${(file.size/1024/1024).toFixed(1)}MB — please choose one under ${(PHOTO_UPLOAD_MAX_BYTES/1024/1024).toFixed(0)}MB.`);
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = evt => onLoaded(evt.target.result);
+    reader.readAsDataURL(file);
   }
 
   /* ===== Styled confirm / info dialogs (replace native window.confirm/alert) ===== */
@@ -3949,18 +4021,25 @@
     const el = document.getElementById('view-dashboard');
     const { perCat, totals } = computeFinance();
 
+    // All three breakdowns below are "current strength" snapshots, same as
+    // the totalActive tile further down — so, like it, they only count
+    // Active students. An Inactive/departed student still exists in the
+    // students array (their history is kept for certificates, past fee
+    // records, etc.) but shouldn't inflate a class/section's current
+    // headcount or gender split until they're reactivated.
     const genderCounts = { Male:0, Female:0, Unspecified:0 };
     students.forEach(s => {
+      if(!isActive(s)) return;
       if(s.gender === 'Male') genderCounts.Male++;
       else if(s.gender === 'Female') genderCounts.Female++;
       else genderCounts.Unspecified++;
     });
     const secCounts = {};
     SECTIONS.forEach(s => secCounts[s] = 0);
-    students.forEach(s => { if(secCounts[s.section] !== undefined) secCounts[s.section]++; });
+    students.forEach(s => { if(isActive(s) && secCounts[s.section] !== undefined) secCounts[s.section]++; });
     const classCounts = {};
     CLASS_LEVELS.forEach(c => classCounts[c] = 0);
-    students.forEach(s => { if(classCounts[s.className] !== undefined) classCounts[s.className]++; });
+    students.forEach(s => { if(isActive(s) && classCounts[s.className] !== undefined) classCounts[s.className]++; });
     const maxClassCount = Math.max(1, ...Object.values(classCounts));
 
     const recentPayments = [...payments].sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,8);
@@ -6891,7 +6970,18 @@
 
   async function saveMarksSheet(){
     const exam = examDefs.find(e => e.id === examCurrentExamId);
-    document.querySelectorAll('.marks-input').forEach(inp => {
+    const markInputs = document.querySelectorAll('.marks-input');
+    for(const inp of markInputs){
+      if(inp.disabled || inp.value === '') continue;
+      const val = Number(inp.value);
+      const maxAllowed = inp.max === '' ? null : Number(inp.max);
+      if(isNaN(val) || val < 0 || (maxAllowed !== null && val > maxAllowed)){
+        showToast(`Marks for "${inp.dataset.subject}" must be between 0 and ${inp.max} — please fix the highlighted entry.`);
+        inp.focus();
+        return;
+      }
+    }
+    markInputs.forEach(inp => {
       const studentId = inp.dataset.student;
       const subject = inp.dataset.subject;
       const absentBox = document.querySelector(`.marks-absent-check[data-student="${studentId}"][data-subject="${CSS.escape(subject)}"]`);
@@ -7522,15 +7612,11 @@
     `;
   }
   function previewSignature(e, which){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      if(which===1){ sig1Data = evt.target.result; document.getElementById('sig1Preview').src = sig1Data; document.getElementById('sig1Preview').style.display='inline-block'; }
-      else { sig2Data = evt.target.result; document.getElementById('sig2Preview').src = sig2Data; document.getElementById('sig2Preview').style.display='inline-block'; }
+    readImageFileWithSizeLimit(e, dataUrl => {
+      if(which===1){ sig1Data = dataUrl; document.getElementById('sig1Preview').src = sig1Data; document.getElementById('sig1Preview').style.display='inline-block'; }
+      else { sig2Data = dataUrl; document.getElementById('sig2Preview').src = sig2Data; document.getElementById('sig2Preview').style.display='inline-block'; }
       renderTemplateEditor(document.getElementById('resultBody')); // refresh to show Remove button
-    };
-    reader.readAsDataURL(file);
+    });
   }
   function clearSignature(which){
     if(which===1) sig1Data=''; else sig2Data='';
@@ -7666,8 +7752,8 @@
         <tbody>
         ${consolidationScale.map((g,i) => `<tr>
           <td><input type="text" class="input cs-grade" value="${g.grade}" style="max-width:80px;"></td>
-          <td><input type="number" class="input cs-min" value="${g.minPct}" style="max-width:80px;"></td>
-          <td><input type="number" class="input cs-max" value="${g.maxPct}" style="max-width:80px;"></td>
+          <td><input type="number" class="input cs-min" value="${g.minPct}" min="0" max="100" style="max-width:80px;"></td>
+          <td><input type="number" class="input cs-max" value="${g.maxPct}" min="0" max="100" style="max-width:80px;"></td>
           <td><button class="btn-danger-text" onclick="removeConsolGradeRow(${i})">Remove</button></td>
         </tr>`).join('')}
         </tbody></table>
@@ -7688,6 +7774,18 @@
     const grades = document.querySelectorAll('.cs-grade');
     const mins = document.querySelectorAll('.cs-min');
     const maxs = document.querySelectorAll('.cs-max');
+    for(let i=0;i<grades.length;i++){
+      if(!grades[i].value.trim()) continue;
+      const minV = Number(mins[i].value)||0, maxV = Number(maxs[i].value)||0;
+      if(minV<0 || minV>100 || maxV<0 || maxV>100){
+        showToast(`"${grades[i].value.trim()}" grade's Min/Max % must each be between 0 and 100.`);
+        return;
+      }
+      if(minV>maxV){
+        showToast(`"${grades[i].value.trim()}" grade's Min % can't be greater than its Max %.`);
+        return;
+      }
+    }
     consolidationScale = Array.from(grades).map((el,i) => ({
       grade: el.value.trim(), minPct: Number(mins[i].value)||0, maxPct: Number(maxs[i].value)||0,
     })).filter(g => g.grade);
@@ -7707,8 +7805,8 @@
         <tbody>
         ${gradingScale.map((g,i) => `<tr>
           <td><input type="text" class="input gs-grade" value="${g.grade}" style="max-width:80px;"></td>
-          <td><input type="number" class="input gs-min" value="${g.minPct}" style="max-width:80px;"></td>
-          <td><input type="number" class="input gs-max" value="${g.maxPct}" style="max-width:80px;"></td>
+          <td><input type="number" class="input gs-min" value="${g.minPct}" min="0" max="100" style="max-width:80px;"></td>
+          <td><input type="number" class="input gs-max" value="${g.maxPct}" min="0" max="100" style="max-width:80px;"></td>
           <td><button class="btn-danger-text" onclick="removeGradeRow(${i})">Remove</button></td>
         </tr>`).join('')}
         </tbody></table>
@@ -7729,6 +7827,18 @@
     const grades = document.querySelectorAll('.gs-grade');
     const mins = document.querySelectorAll('.gs-min');
     const maxs = document.querySelectorAll('.gs-max');
+    for(let i=0;i<grades.length;i++){
+      if(!grades[i].value.trim()) continue;
+      const minV = Number(mins[i].value)||0, maxV = Number(maxs[i].value)||0;
+      if(minV<0 || minV>100 || maxV<0 || maxV>100){
+        showToast(`"${grades[i].value.trim()}" grade's Min/Max % must each be between 0 and 100.`);
+        return;
+      }
+      if(minV>maxV){
+        showToast(`"${grades[i].value.trim()}" grade's Min % can't be greater than its Max %.`);
+        return;
+      }
+    }
     gradingScale = Array.from(grades).map((el,i) => ({
       grade: el.value.trim(), minPct: Number(mins[i].value)||0, maxPct: Number(maxs[i].value)||0,
     })).filter(g => g.grade);
@@ -8357,16 +8467,12 @@
     `;
   }
   function previewExamPrincipalSignature(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = async evt => {
-      schoolInfo.principalSignature = evt.target.result;
+    readImageFileWithSizeLimit(e, async dataUrl => {
+      schoolInfo.principalSignature = dataUrl;
       await storageSet(SCHOOL_INFO_KEY, schoolInfo);
       showToast('Principal / Correspondent signature saved.');
       renderRoomAllotSubBody();
-    };
-    reader.readAsDataURL(file);
+    });
   }
   async function removeExamPrincipalSignature(){
     if(!await showConfirmDialog('Remove the Principal / Correspondent signature? It will need to be re-uploaded before it appears on Admit Cards or Progress Reports again.')) return;
@@ -10698,29 +10804,21 @@
   }
 
   function previewStaffPhoto(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      staffPhotoData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      staffPhotoData = dataUrl;
       document.getElementById('staffPhotoPreview').src = staffPhotoData;
       document.getElementById('staffPhotoPreview').style.display = 'block';
       document.getElementById('staffPhotoPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   function previewStaffSignature(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      staffSignatureData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      staffSignatureData = dataUrl;
       document.getElementById('staffSigPreview').src = staffSignatureData;
       document.getElementById('staffSigPreview').style.display = 'block';
       document.getElementById('staffSigPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   function populateStaffDropdowns(){
@@ -10914,6 +11012,38 @@
     e.preventDefault();
     const editId = document.getElementById('editStaffId').value;
     const g = id => document.getElementById(id).value;
+
+    const stfPhoneVal = g('stfPhone').trim();
+    if(!stfPhoneVal || !isValidMobile(stfPhoneVal)){
+      showToast('Phone must be a valid 10-digit mobile number.');
+      document.getElementById('stfPhone').focus();
+      return false;
+    }
+    const stfEmergencyPhoneVal = g('stfEmergencyPhone').trim();
+    if(stfEmergencyPhoneVal && !isValidMobile(stfEmergencyPhoneVal)){
+      showToast('Emergency Contact Phone must be exactly 10 digits.');
+      document.getElementById('stfEmergencyPhone').focus();
+      return false;
+    }
+    const stfAadharVal = g('stfAadhar').trim();
+    if(stfAadharVal && !isValidAadhar(stfAadharVal)){
+      showToast('Aadhar Number must be exactly 12 digits.');
+      document.getElementById('stfAadhar').focus();
+      return false;
+    }
+    const stfBankAccountVal = g('stfBankAccountNumber').trim();
+    if(stfBankAccountVal && !isValidBankAccount(stfBankAccountVal)){
+      showToast('Account Number must be 6–18 digits.');
+      document.getElementById('stfBankAccountNumber').focus();
+      return false;
+    }
+    const stfBankIfscVal = g('stfBankIfsc').trim().toUpperCase();
+    if(stfBankIfscVal && !isValidIfsc(stfBankIfscVal)){
+      showToast('IFSC Code must be in the format AAAA0999999 — 4 letters, a zero, then 6 letters/digits.');
+      document.getElementById('stfBankIfsc').focus();
+      return false;
+    }
+
     const jobTypes = Array.from(document.querySelectorAll('.stf-jobtype-check:checked')).map(c => c.value);
     const ctVal = g('stfClassTeacherOf');
     const [ctClass, ctSection] = ctVal ? ctVal.split('|') : ['', ''];
@@ -12427,14 +12557,10 @@
     `;
   }
   function onGalleryPhotoSelected(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      galleryUploadData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      galleryUploadData = dataUrl;
       renderWebsiteGallery(document.getElementById('websiteGalleryBody'));
-    };
-    reader.readAsDataURL(file);
+    });
   }
   async function saveGalleryPhoto(){
     if(!galleryUploadData){ showToast('Choose a photo first.'); return; }
@@ -13088,7 +13214,7 @@
           <div class="f-field"><label>Bed Capacity *</label><input type="number" id="hsCapacity" value="${r?r.capacity:2}" min="1"></div>
           <div class="f-field"><label>Fee (₹/year) *</label><input type="number" id="hsFee" value="${r?r.fee:''}" min="0"></div>
           <div class="f-field"><label>Warden Name</label><input type="text" id="hsWardenName" value="${r?r.wardenName||'':''}" placeholder="e.g. Suresh Naidu"></div>
-          <div class="f-field"><label>Warden Phone</label><input type="text" id="hsWardenPhone" value="${r?r.wardenPhone||'':''}" placeholder="10-digit mobile"></div>
+          <div class="f-field"><label>Warden Phone</label><input type="text" id="hsWardenPhone" value="${r?r.wardenPhone||'':''}" placeholder="10-digit mobile" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
         </div>
         <div style="display:flex; gap:10px; margin-top:16px;">
           <button class="btn btn-ghost" onclick="backToRoomsList()">Cancel</button>
@@ -13107,6 +13233,7 @@
     const wardenPhone = document.getElementById('hsWardenPhone').value.trim();
     if(!blockName || !roomNumber){ showToast('Enter a block name and room number.'); return; }
     if(fee <= 0){ showToast('Enter a fee for this room.'); return; }
+    if(wardenPhone && !isValidMobile(wardenPhone)){ showToast('Warden Phone must be exactly 10 digits.'); return; }
     if(editingRoomId){
       const occ = hostelOccupants(editingRoomId).length;
       if(capacity < occ){ showToast(`Can't reduce capacity below ${occ} — that many students are already in this room.`); return; }
@@ -13689,7 +13816,7 @@
           <div class="f-field full"><label>Route Name *</label><input type="text" id="trRouteName" value="${trEditName}" placeholder="e.g. Route 1 — Main Market Stop"></div>
           <div class="f-field"><label>Bus Number</label><input type="text" id="trBusNumber" value="${trEditBusNumber}" placeholder="e.g. AP 03 TZ 4521"></div>
           <div class="f-field"><label>Driver Name</label><input type="text" id="trDriverName" value="${trEditDriverName}" placeholder="e.g. Ramesh Kumar"></div>
-          <div class="f-field"><label>Driver Phone</label><input type="text" id="trDriverPhone" value="${trEditDriverPhone}" placeholder="10-digit mobile"></div>
+          <div class="f-field"><label>Driver Phone</label><input type="text" id="trDriverPhone" value="${trEditDriverPhone}" placeholder="10-digit mobile" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <h4 style="margin:0;">🚏 Stops &amp; Fares</h4>
@@ -13732,6 +13859,7 @@
     const driverPhone = document.getElementById('trDriverPhone').value.trim();
     if(!name){ showToast('Enter a route name.'); return; }
     if(trEditStops.some(s => !s.name.trim())){ showToast('Every stop needs a name.'); return; }
+    if(driverPhone && !isValidMobile(driverPhone)){ showToast('Driver Phone must be exactly 10 digits.'); return; }
     const data = { name, busNumber, driverName, driverPhone, stops: trEditStops };
     if(editingRouteId){
       const idx = transportRoutes.findIndex(x => x.id === editingRouteId);
@@ -14395,14 +14523,10 @@
     `;
   }
   function previewMyAccountPhoto(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      myAccountPhotoData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      myAccountPhotoData = dataUrl;
       renderMyAccountBody();
-    };
-    reader.readAsDataURL(file);
+    });
   }
   function removeMyAccountPhoto(){
     myAccountPhotoData = '';
@@ -15691,7 +15815,7 @@
         <h4>Basic Information</h4>
         <div class="form-grid" style="margin-top:12px;">
           <div class="f-field full"><label>School Name *</label><input type="text" id="siName" value="${schoolInfo.name||''}"></div>
-          <div class="f-field"><label>UDISE Code</label><input type="text" id="siUdise" value="${schoolInfo.udise||''}"></div>
+          <div class="f-field"><label>UDISE Code</label><input type="text" id="siUdise" value="${schoolInfo.udise||''}" inputmode="numeric" maxlength="11" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,11)"></div>
           <div class="f-field"><label>School Code</label><input type="text" id="siSchoolCode" value="${schoolInfo.schoolCode||''}"></div>
           <div class="f-field full"><label>Reg. / Affiliation Number</label><input type="text" id="siRegNumber" value="${schoolInfo.regNumber||''}"></div>
         </div>
@@ -15701,7 +15825,7 @@
         <h4>Contact Details</h4>
         <div class="form-grid" style="margin-top:12px;">
           <div class="f-field"><label>Email</label><input type="email" id="siEmail" value="${schoolInfo.email||''}"></div>
-          <div class="f-field"><label>Phone</label><input type="text" id="siPhone" value="${schoolInfo.phone||''}"></div>
+          <div class="f-field"><label>Phone</label><input type="text" id="siPhone" value="${schoolInfo.phone||''}" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
           <div class="f-field full"><label>Website</label><input type="text" id="siWebsite" value="${schoolInfo.website||''}"></div>
         </div>
       </div>
@@ -15711,7 +15835,7 @@
         <div class="form-grid" style="margin-top:12px;">
           <div class="f-field"><label>State</label><input type="text" id="siState" value="${schoolInfo.state||''}"></div>
           <div class="f-field"><label>District</label><input type="text" id="siDistrict" value="${schoolInfo.district||''}"></div>
-          <div class="f-field"><label>PIN Code</label><input type="text" id="siPin" value="${schoolInfo.pin||''}"></div>
+          <div class="f-field"><label>PIN Code</label><input type="text" id="siPin" value="${schoolInfo.pin||''}" inputmode="numeric" maxlength="6" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,6)"></div>
           <div class="f-field full"><label>Address</label><textarea id="siAddress" rows="2">${schoolInfo.address||''}</textarea></div>
         </div>
       </div>
@@ -15746,28 +15870,38 @@
     `;
   }
   function previewPrincipalSignature(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      schoolPrincipalSignatureData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      schoolPrincipalSignatureData = dataUrl;
       document.getElementById('schoolSigPreview').src = schoolPrincipalSignatureData;
       document.getElementById('schoolSigPreview').style.display = 'block';
       document.getElementById('schoolSigPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    });
   }
   function previewSchoolLogo(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      schoolLogoData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      schoolLogoData = dataUrl;
       document.getElementById('schoolLogoPreview').src = schoolLogoData;
-    };
-    reader.readAsDataURL(file);
+    });
   }
   async function saveSchoolProfile(){
+    const siPhoneVal = document.getElementById('siPhone').value.trim();
+    if(siPhoneVal && !isValidMobile(siPhoneVal)){
+      showToast('Phone must be exactly 10 digits.');
+      document.getElementById('siPhone').focus();
+      return;
+    }
+    const siUdiseVal = document.getElementById('siUdise').value.trim();
+    if(siUdiseVal && !isValidUdise(siUdiseVal)){
+      showToast('UDISE Code must be exactly 11 digits.');
+      document.getElementById('siUdise').focus();
+      return;
+    }
+    const siPinVal = document.getElementById('siPin').value.trim();
+    if(siPinVal && !isValidPin(siPinVal)){
+      showToast('PIN Code must be exactly 6 digits.');
+      document.getElementById('siPin').focus();
+      return;
+    }
     schoolInfo = {
       name: document.getElementById('siName').value.trim(),
       tagline: document.getElementById('siTagline').value.trim(),
@@ -15940,6 +16074,7 @@
         Looking for a student or parent login? Head to <a onclick="switchView('studentparentlogins')" style="cursor:pointer; color:var(--magenta); font-weight:600;">Student/Parent Logins</a>${studentParentCount ? ` — ${studentParentCount} of them there right now` : ''}.
       </p>
       <button class="btn btn-primary" style="margin-bottom:16px;" onclick="openUserModal(undefined, undefined, undefined, 'staff')">+ Add User</button>
+      <button class="btn btn-ghost" style="margin-bottom:16px; margin-left:8px;" onclick="openTrashModal('users')">🗑 Recently Deleted</button>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Name</th><th>Username</th><th>Role</th><th></th></tr></thead>
@@ -16614,8 +16749,9 @@
         <td>${s.admDate || '—'}</td>
         <td>
           ${canDo('admissions','edit') ? `<button class="btn-edit-text" onclick="event.stopPropagation(); editStudent('${s.id}')">Edit</button>` : ''}
+          ${canDo('admissions','edit') ? `&nbsp;·&nbsp;<button class="btn-edit-text" onclick="event.stopPropagation(); toggleStudentActive('${s.id}')">${isActive(s) ? 'Mark Inactive' : 'Mark Active'}</button>` : ''}
           ${(canDo('admissions','edit') && canDo('admissions','delete')) ? '&nbsp;·&nbsp;' : ''}
-          ${canDo('admissions','delete') ? `<button class="btn-danger-text" onclick="event.stopPropagation(); deleteStudent('${s.id}')">Delete</button>` : ''}
+          ${canDo('admissions','delete') ? `<button class="btn-danger-text" onclick="event.stopPropagation(); requestDeleteStudent('${s.id}')">Request Deletion</button>` : ''}
         </td>
       </tr>
     `).join('');
@@ -16732,7 +16868,8 @@
         </div>
         <div class="profile-actions">
           ${canDo('admissions','edit') ? `<button class="btn btn-ghost" onclick="editStudent('${s.id}')">Edit</button>` : ''}
-          ${canDo('admissions','delete') ? `<button class="btn btn-danger-text" style="border:1.5px solid var(--border); border-radius:10px; padding:11px 20px;" onclick="deleteStudent('${s.id}')">Delete</button>` : ''}
+          ${canDo('admissions','edit') ? `<button class="btn btn-ghost" onclick="toggleStudentActive('${s.id}')">${isActive(s) ? 'Mark Inactive' : 'Mark Active'}</button>` : ''}
+          ${canDo('admissions','delete') ? `<button class="btn btn-danger-text" style="border:1.5px solid var(--border); border-radius:10px; padding:11px 20px;" onclick="requestDeleteStudent('${s.id}')">Request Deletion</button>` : ''}
         </div>
       </div>
       ${buildProfileCardsHTML(s)}
@@ -17685,8 +17822,9 @@
         <td>${s.admDate||'—'}</td>
         <td>
           ${canDo('admissions','edit') ? `<button class="btn-edit-text" onclick="event.stopPropagation(); editStudent('${s.id}')">Edit</button>` : ''}
+          ${canDo('admissions','edit') ? `&nbsp;·&nbsp;<button class="btn-edit-text" onclick="event.stopPropagation(); toggleStudentActive('${s.id}')">${isActive(s) ? 'Mark Inactive' : 'Mark Active'}</button>` : ''}
           ${(canDo('admissions','edit') && canDo('admissions','delete')) ? '&nbsp;·&nbsp;' : ''}
-          ${canDo('admissions','delete') ? `<button class="btn-danger-text" onclick="event.stopPropagation(); deleteStudent('${s.id}')">Delete</button>` : ''}
+          ${canDo('admissions','delete') ? `<button class="btn-danger-text" onclick="event.stopPropagation(); requestDeleteStudent('${s.id}')">Request Deletion</button>` : ''}
         </td>
       </tr>
     `).join('');
@@ -17985,6 +18123,174 @@
     document.getElementById('moreActionsMenu').classList.remove('open');
   }
 
+  // ===== Recently Deleted (soft-delete trash + restore) =====
+  // Students and Users are soft-deleted server-side (see server.js) after a
+  // real incident where a hard delete gave no way back from a mistake.
+  // This modal is the one place both resources' "Recently Deleted" list
+  // and Restore action live, since the two are otherwise identical.
+  let _trashResource = '';
+  const TRASH_CONFIG = {
+    students: {
+      apiPath: '/api/students',
+      title: 'Recently Deleted Students',
+      label: s => `${s.firstName||''} ${s.lastName||''}`.trim() || '(no name)',
+      meta: s => `${s.className||'—'} — Section ${s.section||'—'} · Admission No: ${s.admissionNo||'—'}`,
+      onRestored: async () => { await loadStudents(); renderDashboard(); renderAdmissionsBody(); },
+    },
+    users: {
+      apiPath: '/api/users',
+      title: 'Recently Deleted Users',
+      label: u => u.name || u.username || '(no name)',
+      meta: u => `${u.username||'—'} · ${u.role||'—'}`,
+      onRestored: async () => { await loadUsers(); refreshUserListViews(); },
+    },
+  };
+  async function openTrashModal(resource){
+    _trashResource = resource;
+    document.getElementById('trashModalTitle').textContent = TRASH_CONFIG[resource].title;
+    document.getElementById('trashModalOverlay').classList.add('open');
+    const menu = document.getElementById('moreActionsMenu');
+    if(menu) menu.classList.remove('open');
+    await renderTrashModal();
+  }
+  function closeTrashModal(){
+    document.getElementById('trashModalOverlay').classList.remove('open');
+  }
+  async function renderTrashModal(){
+    const cfg = TRASH_CONFIG[_trashResource];
+    const body = document.getElementById('trashModalBody');
+    body.innerHTML = `<div class="empty-state"><b>Loading…</b></div>`;
+    let rows = [];
+    try{
+      const res = await fetch(cfg.apiPath + '?trash=1');
+      if(!res.ok) throw new Error('Request failed (' + res.status + ')');
+      rows = await res.json();
+    }catch(e){
+      body.innerHTML = `<div class="empty-state"><b>Could not load</b>${e.message}</div>`;
+      return;
+    }
+    if(!rows.length){
+      body.innerHTML = `<div class="empty-state"><b>Nothing here</b>No deleted records right now.</div>`;
+      return;
+    }
+    body.innerHTML = rows.map(r => `
+      <div class="list-manage-row">
+        <div style="font-size:0.82rem;">
+          <div class="lm-name">${cfg.label(r)}</div>
+          <div class="lm-meta">${cfg.meta(r)}</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-primary btn-sm" onclick="restoreTrashedRecord('${r.id}')">Restore</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  async function restoreTrashedRecord(id){
+    const cfg = TRASH_CONFIG[_trashResource];
+    try{
+      await throwIfNotOk(await fetch(cfg.apiPath + '?id=' + encodeURIComponent(id) + '&restore=1', { method:'PUT', headers: actorHeaders() }));
+      showToast('Restored.');
+      await cfg.onRestored();
+      await renderTrashModal();
+    }catch(e){
+      showToast('Could not restore (' + e.message + ').');
+    }
+  }
+
+  // ===== Pending Deletion Requests (four-eyes approval) =====
+  // Requesting and approving a student's deletion are always two different
+  // people — server.js's handleDeletionRequests refuses the same person
+  // doing both, even an Admin. Admin/Principal see and act on every
+  // request here; anyone else sees only the ones they personally filed, so
+  // they can check whether theirs went through without seeing the queue.
+  function openDeletionRequestsModal(){
+    document.getElementById('deletionRequestsModalOverlay').classList.add('open');
+    const menu = document.getElementById('moreActionsMenu');
+    if(menu) menu.classList.remove('open');
+    renderDeletionRequestsModal();
+  }
+  function closeDeletionRequestsModal(){
+    document.getElementById('deletionRequestsModalOverlay').classList.remove('open');
+  }
+  async function renderDeletionRequestsModal(){
+    const body = document.getElementById('deletionRequestsModalBody');
+    const isManagement = currentUser && ['Admin','Principal'].includes(currentUser.role);
+    document.getElementById('deletionRequestsModalSub').textContent = isManagement
+      ? 'A record is only ever deleted once TWO different Admins/Principals approve the request, one after the other — neither the requester nor the first approver can also give the final approval.'
+      : 'Requests you have filed, and whether they were approved or rejected. Only Admin/Principal can decide a pending request, and it takes two of them.';
+    body.innerHTML = `<div class="empty-state"><b>Loading…</b></div>`;
+    let rows = [];
+    try{
+      const res = await fetch('/api/deletion-requests');
+      if(!res.ok) throw new Error('Request failed (' + res.status + ')');
+      rows = await res.json();
+    }catch(e){
+      body.innerHTML = `<div class="empty-state"><b>Could not load</b>${e.message}</div>`;
+      return;
+    }
+    if(!rows.length){
+      body.innerHTML = `<div class="empty-state"><b>Nothing here</b>No deletion requests right now.</div>`;
+      return;
+    }
+    const statusPill = st => {
+      const color = st === 'Pending' ? 'var(--warn, #b8860b)'
+        : st === 'Pending Final Approval' ? 'var(--info, #2563eb)'
+        : st === 'Approved' ? 'var(--danger, #c0392b)'
+        : 'var(--muted, #667)';
+      return `<span class="pill" style="color:${color};border-color:${color};">${st}</span>`;
+    };
+    const myId = currentUser && currentUser.id;
+    const canDecide = r => isManagement
+      && (r.status === 'Pending' || r.status === 'Pending Final Approval')
+      && r.requestedBy !== myId
+      && !(r.status === 'Pending Final Approval' && r.firstApprovedBy === myId);
+    body.innerHTML = rows.map(r => `
+      <div class="list-manage-row">
+        <div style="font-size:0.82rem;">
+          <div class="lm-name">${r.recordLabel || r.recordId} ${statusPill(r.status)}</div>
+          <div class="lm-meta">Reason: ${r.reason || '—'}</div>
+          <div class="lm-meta">Requested by ${r.requestedByName || '—'} · ${new Date(r.requestedAt).toLocaleString('en-IN')}</div>
+          ${r.firstApprovedByName ? `<div class="lm-meta">First approval by ${r.firstApprovedByName} · ${r.firstApprovedAt ? new Date(r.firstApprovedAt).toLocaleString('en-IN') : ''}</div>` : ''}
+          ${(r.status === 'Approved' || r.status === 'Rejected') ? `<div class="lm-meta">${r.status === 'Approved' ? 'Final approval' : 'Rejected'} by ${r.decidedByName || '—'} · ${r.decidedAt ? new Date(r.decidedAt).toLocaleString('en-IN') : ''}${r.decisionNote ? ' · ' + r.decisionNote : ''}</div>` : ''}
+        </div>
+        ${canDecide(r) ? `
+        <div style="display:flex; gap:10px;">
+          <button class="btn-danger-text" onclick="decideDeletionRequest('${r.id}','Approve','${r.status}')">${r.status === 'Pending' ? 'Give First Approval' : 'Give Final Approval &amp; Delete'}</button>
+          <button class="btn-edit-text" onclick="decideDeletionRequest('${r.id}','Reject','${r.status}')">Reject</button>
+        </div>` : ''}
+      </div>
+    `).join('');
+  }
+  async function decideDeletionRequest(id, decision, stage){
+    const verb = decision === 'Approve'
+      ? (stage === 'Pending'
+        ? 'give the first approval on this deletion request (nothing is deleted yet — a second, different Admin/Principal must still approve it again)'
+        : 'give the final approval on this deletion request (the record will be soft-deleted immediately, recoverable from Recently Deleted)')
+      : 'reject this deletion request';
+    if(!await showConfirmDialog(`Are you sure you want to ${verb}?`)) return;
+    let note = null;
+    if(decision === 'Reject'){
+      note = prompt('Optional: note for the person who requested this (why it was rejected).') || '';
+    }
+    try{
+      const res = await throwIfNotOk(await fetch('/api/deletion-requests?id=' + encodeURIComponent(id), {
+        method:'PUT', headers:{'Content-Type':'application/json', ...actorHeaders()}, body:JSON.stringify({ decision, note })
+      }));
+      const data = await res.json().catch(() => ({}));
+      if(decision === 'Approve' && data.status === 'Pending Final Approval'){
+        showToast('First approval recorded — awaiting a second, different Admin/Principal to give the final approval.');
+      }else if(decision === 'Approve' && data.status === 'Approved'){
+        showToast('Final approval recorded — record removed (recoverable from Recently Deleted).');
+        await loadStudents(); renderDashboard(); renderAdmissionsBody();
+      }else{
+        showToast('Deletion request rejected.');
+      }
+      await renderDeletionRequestsModal();
+    }catch(e){
+      showToast('Could not record your decision (' + e.message + ').');
+    }
+  }
+
   function openDuplicatesModal(){
     renderDuplicatesModal();
     document.getElementById('duplicatesModalOverlay').classList.add('open');
@@ -18018,7 +18324,7 @@
             </div>
             <div style="display:flex; gap:10px;">
               <button class="btn-edit-text" onclick="closeDuplicatesModal(); editStudent('${s.id}');">View / Edit</button>
-              <button class="btn-danger-text" onclick="deleteDuplicateEntry('${s.id}')">Delete</button>
+              <button class="btn-danger-text" onclick="deleteDuplicateEntry('${s.id}')">Request Deletion</button>
             </div>
           </div>
         `).join('')}
@@ -18026,13 +18332,16 @@
     `).join('');
   }
   async function deleteDuplicateEntry(id){
-    if(!await showConfirmDialog('Remove this duplicate record? This cannot be undone.')) return;
-    students = students.filter(s => s.id !== id);
-    await persist();
-    renderDashboard();
-    renderAdmissionsBody();
-    renderDuplicatesModal();
-    showToast('Duplicate removed.');
+    const s = students.find(x => x.id === id);
+    if(!s) return;
+    if(!await showConfirmDialog(`Send a deletion request for this duplicate record (${s.firstName} ${s.lastName}, ${s.admissionNo}) to an Admin/Principal for approval? Nothing is deleted yet.`)) return;
+    try{
+      await throwIfNotOk(await fetch('/api/deletion-requests', { method:'POST', headers:{'Content-Type':'application/json', ...actorHeaders()}, body:JSON.stringify({ resource:'students', recordId:id, reason:'Duplicate record (flagged from Find Duplicate Students)' }) }));
+      renderDuplicatesModal();
+      showToast('Deletion request sent — awaiting approval from another Admin/Principal.');
+    }catch(e){
+      if(e.message !== 'SESSION_EXPIRED') showToast('Could not send the deletion request (' + e.message + ').');
+    }
   }
 
   function openTransferCertPicker(){
@@ -18063,7 +18372,118 @@
         <p>Date of Admission: <b>${s.admDate||'—'}</b></p>
         <p>Date of Issue: <b>${new Date().toISOString().slice(0,10)}</b></p>
         <br><br>
-        <p style="text-align:right;">Signature of Principal / Correspondent</p>
+        <div style="text-align:right;">
+          ${schoolInfo.principalSignature ? `<img src="${schoolInfo.principalSignature}" style="height:50px; display:block; margin-left:auto;"><br>` : '<br><br>'}
+          <span>Signature of Principal / Correspondent</span>${schoolInfo.principalName ? `<br><span style="font-size:0.85em;">${schoolInfo.principalName}</span>` : ''}
+        </div>
+      </body></html>
+    `);
+    w.document.close();
+  }
+
+  /* ===== STUDY CERTIFICATE ===== */
+  let studyCertStudent = null;
+  function defaultAcademicYear(){
+    const now = new Date();
+    const y = now.getFullYear();
+    // Indian school convention: academic year runs June-May, so before June
+    // the "current" academic year started the previous calendar year.
+    return now.getMonth() >= 5 ? `${y}-${String(y+1).slice(-2)}` : `${y-1}-${String(y).slice(-2)}`;
+  }
+  function pronounFor(gender, kind){
+    if(gender === 'Female') return kind === 'title' ? 'Ms./Kum.' : kind === 'possessive' ? 'Her' : 'She';
+    if(gender === 'Male') return kind === 'title' ? 'Mr.' : kind === 'possessive' ? 'His' : 'He';
+    return kind === 'title' ? '' : kind === 'possessive' ? 'Their' : 'The student';
+  }
+  function openStudyCertPicker(){
+    document.getElementById('moreActionsMenu').classList.remove('open');
+    if(students.length === 0){ showToast('No students available.'); return; }
+    const name = prompt('Enter the admission number of the student for the Study Certificate:');
+    if(!name) return;
+    const s = students.find(x => x.admissionNo.toLowerCase() === name.trim().toLowerCase());
+    if(!s){ showToast('No student found with that admission number.'); return; }
+    openStudyCertModal(s);
+  }
+  function openStudyCertModal(s){
+    studyCertStudent = s;
+    const body = document.getElementById('studyCertModalBody');
+    body.innerHTML = `
+      <div class="profile-card" style="margin-bottom:14px;">
+        <div class="profile-row"><span>Name</span><span>${s.firstName} ${s.lastName}</span></div>
+        <div class="profile-row"><span>Admission No</span><span>${s.admissionNo}</span></div>
+        <div class="profile-row"><span>Class — Section</span><span>${s.className} — ${s.section}</span></div>
+        <div class="profile-row"><span>Father / Mother Name</span><span>${s.fatherName||'—'} / ${s.motherName||'—'}</span></div>
+        <div class="profile-row"><span>Date of Birth</span><span>${s.dob||'—'}</span></div>
+        <div class="profile-row"><span>Date of Admission</span><span>${s.admDate||'—'}</span></div>
+        <div class="profile-row"><span>Current Status</span><span>${s.status||'Active'}</span></div>
+      </div>
+      <div class="form-grid" style="display:grid; gap:12px;">
+        <label>Academic Year<input type="text" id="studyCertAcademicYear" value="${defaultAcademicYear()}"></label>
+        <label>Conduct
+          <select id="studyCertConduct">
+            <option value="Excellent">Excellent</option>
+            <option value="Very Good" selected>Very Good</option>
+            <option value="Good">Good</option>
+            <option value="Satisfactory">Satisfactory</option>
+          </select>
+        </label>
+        <label>Purpose (optional)<input type="text" id="studyCertPurpose" placeholder="e.g. for general purposes" value=""></label>
+      </div>
+    `;
+    document.getElementById('studyCertModalOverlay').classList.add('open');
+  }
+  function closeStudyCertModal(){
+    document.getElementById('studyCertModalOverlay').classList.remove('open');
+    studyCertStudent = null;
+  }
+  async function submitStudyCertificate(){
+    const s = studyCertStudent;
+    if(!s) return;
+    const academicYear = document.getElementById('studyCertAcademicYear').value.trim() || defaultAcademicYear();
+    const conduct = document.getElementById('studyCertConduct').value;
+    const purpose = document.getElementById('studyCertPurpose').value.trim() || 'general purposes';
+    try{
+      const res = await throwIfNotOk(await fetch('/api/certificates', {
+        method:'POST', headers:{'Content-Type':'application/json', ...actorHeaders()},
+        body: JSON.stringify({ type:'Study', resource:'students', recordId:s.id, conduct, purpose, academicYear })
+      }));
+      const data = await res.json();
+      closeStudyCertModal();
+      printStudyCertificate(s, { serialNo:data.serialNo, conduct, purpose, academicYear });
+      showToast('Study Certificate ' + data.serialNo + ' generated and logged.');
+    }catch(e){
+      if(e.message !== 'SESSION_EXPIRED') showToast('Could not generate the certificate (' + e.message + ').');
+    }
+  }
+  function printStudyCertificate(s, cert){
+    const isCurrentlyStudying = (s.status || 'Active') !== 'Inactive';
+    const guardianLabel = s.fatherName ? `S/o Sri ${s.fatherName}` : (s.motherName ? `D/o Smt ${s.motherName}` : '');
+    const studyLine = isCurrentlyStudying
+      ? `is currently studying in Class <b>${s.className} — Section ${s.section}</b> during the academic year <b>${cert.academicYear}</b>.`
+      : `studied in this institution up to Class <b>${s.className} — Section ${s.section}</b> during the academic year <b>${cert.academicYear}</b>, and is no longer on the rolls of this institution.`;
+    const w = window.open('', '_blank');
+    w.document.write(`
+      <html><head><title>Study Certificate</title></head>
+      <body onload="window.print()" style="font-family:serif; padding:50px; max-width:700px; margin:0 auto; line-height:1.7;">
+        <h2 style="text-align:center; margin-bottom:2px;">${schoolInfo.name}</h2>
+        <p style="text-align:center; margin:0;">${schoolInfo.address}</p>
+        ${schoolInfo.udise || schoolInfo.regNumber ? `<p style="text-align:center; margin:2px 0; font-size:0.85em;">${schoolInfo.udise?('UDISE: '+schoolInfo.udise):''}${schoolInfo.udise && schoolInfo.regNumber?' · ':''}${schoolInfo.regNumber?('Reg No: '+schoolInfo.regNumber):''}</p>` : ''}
+        <hr>
+        <div style="display:flex; justify-content:space-between; font-size:0.9em; margin:10px 0;">
+          <span>Certificate No: <b>${cert.serialNo}</b></span>
+          <span>Date of Issue: <b>${new Date().toISOString().slice(0,10)}</b></span>
+        </div>
+        <h3 style="text-align:center; margin:20px 0; letter-spacing:1px;">STUDY CERTIFICATE</h3>
+        <p>This is to certify that ${pronounFor(s.gender,'title')} <b>${s.firstName} ${s.lastName}</b>${guardianLabel?(', '+guardianLabel):''}, bearing Admission Number <b>${s.admissionNo}</b>, ${studyLine}</p>
+        <p>Date of Birth (as per school records): <b>${s.dob||'—'}</b></p>
+        <p>Date of Admission: <b>${s.admDate||'—'}</b></p>
+        <p>${pronounFor(s.gender,'possessive')} conduct and character during the period of study at this institution were found to be <b>${cert.conduct}</b>.</p>
+        <p>This certificate is issued at the request of the student/guardian for ${cert.purpose}.</p>
+        <br><br>
+        <div style="text-align:right;">
+          ${schoolInfo.principalSignature ? `<img src="${schoolInfo.principalSignature}" style="height:50px; display:block; margin-left:auto;"><br>` : '<br><br>'}
+          <span>Signature of Principal / Head of Institution</span>${schoolInfo.principalName ? `<br><span style="font-size:0.85em;">${schoolInfo.principalName}</span>` : ''}
+        </div>
       </body></html>
     `);
     w.document.close();
@@ -18096,16 +18516,12 @@
   }
 
   function previewPhoto(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt){
-      wizardPhotoData = evt.target.result;
+    readImageFileWithSizeLimit(e, dataUrl => {
+      wizardPhotoData = dataUrl;
       document.getElementById('photoPreview').src = wizardPhotoData;
       document.getElementById('photoPreview').style.display = 'block';
       document.getElementById('photoPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   function populateSiblingSelect(excludeId){
@@ -18269,14 +18685,45 @@
     document.getElementById('wizardOverlay').classList.add('open');
   }
 
-  async function deleteStudent(id){
-    if(!await showConfirmDialog('Remove this student record? This cannot be undone.')) return;
-    students = students.filter(s => s.id !== id);
+  // A child leaving or pausing is a status change, never a deletion — this
+  // is the one-click toggle for that. It never touches deleted_at, never
+  // goes through the deletion-request flow, and is fully reversible on its
+  // own: the record, its fee history, and its Transfer Certificate data all
+  // stay exactly where they are, active or not.
+  async function toggleStudentActive(id){
+    const s = students.find(x => x.id === id);
+    if(!s) return;
+    const goingInactive = isActive(s);
+    const msg = goingInactive
+      ? `Mark ${s.firstName} ${s.lastName} as Inactive? They'll drop out of the current class/section strength and stop accruing new fee dues until reactivated — their record, fee history, and certificate details are all kept exactly as they are.`
+      : `Mark ${s.firstName} ${s.lastName} as Active again? They'll count toward the current strength and fee dues will resume from today.`;
+    if(!await showConfirmDialog(msg)) return;
+    s.status = goingInactive ? 'Inactive' : 'Active';
     await persist();
     renderDashboard();
-    if(admissionsView === 'profile') admissionsView = currentClass ? 'section' : 'grid';
     renderAdmissionsBody();
-    showToast('Student record deleted.');
+    showToast(goingInactive ? 'Marked Inactive.' : 'Marked Active.');
+  }
+
+  // Deletion is for genuine mistakes (duplicates, bad entries) — never how
+  // a departing student is meant to be handled (use toggleStudentActive
+  // above for that). This never deletes anything itself: it files a
+  // request that a *different* Admin/Principal must review and approve —
+  // see handleDeletionRequests in server.js for the four-eyes check — and
+  // only that approval actually soft-deletes the record.
+  async function requestDeleteStudent(id){
+    const s = students.find(x => x.id === id);
+    if(!s) return;
+    const reason = prompt(`Why should ${s.firstName} ${s.lastName}'s record be deleted?\n\nIf this child has simply left the school, use "Mark Inactive" instead — that keeps their data for Transfer Certificates. Deletion is only for genuine mistakes, like a duplicate entry.`);
+    if(reason === null) return;
+    if(!reason.trim()){ showToast('A reason is required.'); return; }
+    if(!await showConfirmDialog(`Send this deletion request to an Admin/Principal for approval? Nothing is deleted yet — a different Admin or Principal must review and approve it first.`)) return;
+    try{
+      await throwIfNotOk(await fetch('/api/deletion-requests', { method:'POST', headers:{'Content-Type':'application/json', ...actorHeaders()}, body:JSON.stringify({ resource:'students', recordId:id, reason:reason.trim() }) }));
+      showToast('Deletion request sent — awaiting approval from another Admin/Principal.');
+    }catch(e){
+      if(e.message !== 'SESSION_EXPIRED') showToast('Could not send the deletion request (' + e.message + ').');
+    }
   }
 
   function refreshFSectionOptions(){
@@ -18318,6 +18765,33 @@
     e.preventDefault();
     const editId = document.getElementById('editId').value;
     const g = id => document.getElementById(id).value;
+
+    const wizardMobileChecks = [
+      ['fFatherPhone', "Father's Phone Number"],
+      ['fMotherPhone', "Mother's Phone Number"],
+      ['fGuardianPhone', 'Guardian Phone'],
+    ];
+    for(const [fid, label] of wizardMobileChecks){
+      const val = g(fid).trim();
+      if(val && !isValidMobile(val)){
+        showToast(`${label} must be exactly 10 digits.`);
+        document.getElementById(fid).focus();
+        return false;
+      }
+    }
+    const wizardAadharChecks = [
+      ['fAadhar', 'Aadhar Number'],
+      ['fFatherAadhar', "Father's Aadhaar"],
+      ['fMotherAadhar', "Mother's Aadhaar"],
+    ];
+    for(const [fid, label] of wizardAadharChecks){
+      const val = g(fid).trim();
+      if(val && !isValidAadhar(val)){
+        showToast(`${label} must be exactly 12 digits.`);
+        document.getElementById(fid).focus();
+        return false;
+      }
+    }
 
     const data = {
       firstName: g('fFirstName').trim(), lastName: g('fLastName').trim(),
